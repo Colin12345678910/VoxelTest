@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VoxelTest", "VoxelTest\VoxelTest.vcxproj", "{3A7B39ED-E1C1-4640-89CB-7408A6634A1B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{83A20BF4-4B99-4E5C-86E2-06583941A272}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3A7B39ED-E1C1-4640-89CB-7408A6634A1B}.Debug|x64.ActiveCfg = Debug|x64
+		{3A7B39ED-E1C1-4640-89CB-7408A6634A1B}.Debug|x64.Build.0 = Debug|x64
+		{3A7B39ED-E1C1-4640-89CB-7408A6634A1B}.Debug|x86.ActiveCfg = Debug|Win32
+		{3A7B39ED-E1C1-4640-89CB-7408A6634A1B}.Debug|x86.Build.0 = Debug|Win32
+		{3A7B39ED-E1C1-4640-89CB-7408A6634A1B}.Release|x64.ActiveCfg = Release|x64
+		{3A7B39ED-E1C1-4640-89CB-7408A6634A1B}.Release|x64.Build.0 = Release|x64
+		{3A7B39ED-E1C1-4640-89CB-7408A6634A1B}.Release|x86.ActiveCfg = Release|Win32
+		{3A7B39ED-E1C1-4640-89CB-7408A6634A1B}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B443E84E-403B-4AAD-8DB5-910E2B98EFBF}
+	EndGlobalSection
+EndGlobal
