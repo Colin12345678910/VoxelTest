@@ -310,9 +310,13 @@ void Game::HandleKeyAndMouse(float deltaTime)
     if (kb.R)
     {
         ChunkMesh* ch = &World::GetChunks()->front();
-        if (!ch->GetState() == ChunkMesh::Deallocated)
+        if (ch->GetState() != ChunkMesh::Deallocated)
         {
-            ch->mesh->MarkDirty();
+            ch->chunk->SetBlock(rand() % 32, rand() % 256, rand() % 32, 1);
+         
+            //delete ch->mesh;
+            ch->mesh->Release(); //It's important to release the mesh before re-creating it to avoid a memory leak.
+            ch->mesh->CreateChunkMesh(ch->chunk, m_deviceResources->GetD3DDevice(), m_deviceResources->GetD3DDeviceContext());
         }
         
         //chunk.Release();
@@ -320,7 +324,7 @@ void Game::HandleKeyAndMouse(float deltaTime)
         //World::GetChunks().front().mesh->GenerateMesh(World::GetChunks().front().chunk);
     }
     Quaternion q = Quaternion::CreateFromYawPitchRoll(yaw, -pitch, 0);
-    move.z -= 1.f;
+    //move.z -= 1.f;
     move = Vector3::Transform(move, q);
     move *= (double)deltaTime * 100;
 

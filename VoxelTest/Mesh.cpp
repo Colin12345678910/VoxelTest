@@ -26,6 +26,7 @@ bool Mesh::CreateChunkMesh(Chunk* chunk, ID3D11Device* D3DDevice, ID3D11DeviceCo
 	mutex.unlock();
 	if (MarkForDeletion) {
 		delete this;
+		return false;
 	}
 	return true;
 } 
@@ -288,6 +289,19 @@ Mesh::Mesh()
 Mesh::~Mesh()
 {
 	if(pVertexBuffer != nullptr)
+		pVertexBuffer->Release();
+	if (pIndicesBuffer != nullptr)
+		pIndicesBuffer->Release();
+	if (pInputLayout != nullptr)
+		pInputLayout->Release();
+	delete indices;
+	delete pEffect;
+	delete vertices;
+}
+
+void Mesh::Release()
+{
+	if (pVertexBuffer != nullptr)
 		pVertexBuffer->Release();
 	if (pIndicesBuffer != nullptr)
 		pIndicesBuffer->Release();

@@ -26,6 +26,7 @@ public:
 	}
 	Mesh();
 	~Mesh();
+	void Release();
 protected:
 
 	void ThreadMesh(Chunk* chunk, ID3D11Device* D3DDevice, ID3D11DeviceContext* context);
