@@ -12,12 +12,12 @@ int num_blocks = 16;
 
 
 
-void Mesh::CreateChunkMesh(Chunk* chunk, ID3D11Device* D3DDevice, ID3D11DeviceContext* context)
+bool Mesh::CreateChunkMesh(Chunk* chunk, ID3D11Device* D3DDevice, ID3D11DeviceContext* context)
 {
 	//std::jthread t(&Mesh::ThreadMesh, this, chunk, D3DDevice, context);
-	if (MarkForDeletion) return;
-	if (!isDirty) return;
-	if (!mutex.try_lock()) return;
+	//if (MarkForDeletion) return;
+	//if (!isDirty) return;
+	if (!mutex.try_lock()) return false;
 	GenerateMesh(chunk);
 	InitalizeShaders(D3DDevice, context);
 	InitializeGeometry(D3DDevice);
@@ -27,7 +27,7 @@ void Mesh::CreateChunkMesh(Chunk* chunk, ID3D11Device* D3DDevice, ID3D11DeviceCo
 	if (MarkForDeletion) {
 		delete this;
 	}
-	hasCompleted = true;
+	return true;
 } 
 
 void Mesh::GenerateMesh(Chunk* chunk)
@@ -56,7 +56,7 @@ void Mesh::GenerateMesh(Chunk* chunk)
 	}
 	numVerts = numIndices = 0;
 
-	delete vertices;
+	//delete vertices;
 	vertices = new VertexPositionColor[verts.size()];
 	int Vertsize = verts.size();
 	//for (int i = 0; i < Vertsize; i++) {
@@ -74,7 +74,7 @@ void Mesh::GenerateMesh(Chunk* chunk)
 
 	verts.clear();
 	
-	delete indices;
+	//delete indices;
 	indices = new UINT[indexs.size()];
 	int indexSize = indexs.size();
 
@@ -256,9 +256,6 @@ void Mesh::InitalizeShaders(ID3D11Device* D3DDevice, ID3D11DeviceContext* contex
 
 void Mesh::Draw(ID3D11DeviceContext* DeviceContext, const Matrix& view, const Matrix& world, const Matrix& projection)
 {
-	if (!hasCompleted) {
-		return;
-	}
 	pEffect->SetWorld(world);
 	pEffect->SetView(view);
 	pEffect->SetProjection(projection);
@@ -286,7 +283,6 @@ Mesh::Mesh()
 	numIndices = 0;
 	vertices = 0;
 	indices = 0;
-	hasCompleted = false;
 }
 
 Mesh::~Mesh()

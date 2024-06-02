@@ -14,8 +14,10 @@ public:
 	void Initalize();
 	void Update(int worldX, int worldY);
 	static list<ChunkMesh>* GetChunks() { return &chunks; }
+	static void ToggleWorldGen() { isRunning = !isRunning; }
 private:
 	static list<ChunkMesh> chunks;
+	static bool isRunning;
 	int x;
 	int y;
 	Noise noise;

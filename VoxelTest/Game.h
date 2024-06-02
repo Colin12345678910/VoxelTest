@@ -57,7 +57,7 @@ public:
     void OnWindowMoved();
     void OnDisplayChange();
     void OnWindowSizeChanged(int width, int height);
-    Vector3 cameraPos = Vector3(0, 196, 0);
+    Vector3 cameraPos = Vector3(0, 72, 0);
     // Properties
     void GetDefaultSize( int& width, int& height ) const noexcept;
 

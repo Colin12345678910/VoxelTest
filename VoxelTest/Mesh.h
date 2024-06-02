@@ -11,20 +11,18 @@ using DirectX::VertexPositionColor;
 class Mesh
 {
 public:
-	void CreateChunkMesh(Chunk* chunk, ID3D11Device* D3DDevice, ID3D11DeviceContext* context);
-	void GenerateMesh(Chunk *chunk);
+	bool CreateChunkMesh(Chunk* chunk, ID3D11Device* D3DDevice, ID3D11DeviceContext* context);
+	
 	void AddCubeMesh(Vector3 pos, bool up, bool down, bool left, bool right, bool front, bool back);
 	void InitializeGeometry(ID3D11Device* D3DDevice);
 	void InitalizeShaders(ID3D11Device* D3DDevice, ID3D11DeviceContext* context);
 	void Draw(ID3D11DeviceContext* DeviceContext, const Matrix& view, const Matrix& world, const Matrix& projection);
-	bool HasCompleted() { return hasCompleted; }
 	void MarkDeletion() {
 		MarkForDeletion = true;
 		isDirty = false;
 	}
 	void MarkDirty() { 
 		isDirty = true;
-		hasCompleted = false;
 	}
 	Mesh();
 	~Mesh();
@@ -40,13 +38,13 @@ protected:
 	int numIndices = 0;
 	std::list<VertexPositionColor> verts;
 	std::list<UINT> indexs;
-	bool hasCompleted = false;
 	bool MarkForDeletion = false;
 	VertexPositionColor* vertices;
 	UINT* indices;
 	bool isDirty = true;
 	
 	std::mutex mutex;
-	
+private:
+	void GenerateMesh(Chunk* chunk);
 };
 

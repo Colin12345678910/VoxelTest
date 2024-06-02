@@ -6,11 +6,11 @@ bool WorldRenderer::HasEnded = false;
 void WorldRenderer::Render(const Matrix& view, const Matrix& world, const Matrix& projection)
 {
 	list<ChunkMesh> chunks = *World::GetChunks();
-	chunks.begin();
+	//chunks.begin();
 	
 	for (ChunkMesh chunk : chunks)
 	{
-		if (chunk.IsDirty())
+		if (chunk.GetState() != chunk.Finished)
 		{
 
 		}
@@ -39,18 +39,24 @@ void WorldRenderer::MeshThread(int threadNum)
 {
 	while (!HasEnded)
 	{
-		list<ChunkMesh> chunks = *World::GetChunks();
-		for (ChunkMesh chunk : chunks)
+		//list<ChunkMesh> chunks = *World::GetChunks();
+		
+		list<ChunkMesh>::iterator iter;
+		iter = World::GetChunks()->begin();
 
-			
+		while (iter != World::GetChunks()->end())
+		{
+			if (iter->GetState() == ChunkMesh::Placed)
 			{
-			
-				//if (chunk.mesh->isDirty)
-				//{
-			if(!chunk.IsDirty())
-					chunk.mesh->CreateChunkMesh(chunk.chunk, D3DDevice, Context);
-				//}
-			}
+				if (iter->mesh->CreateChunkMesh(iter->chunk, D3DDevice, Context))
+				{
+					iter->SetState(ChunkMesh::Meshed);
+				}
+				
+			}	
+			iter++;
+		}
+
 			
 		this_thread::sleep_for(chrono::milliseconds(500));
 	}

@@ -43,23 +43,6 @@ void Game::Initialize(HWND window, int width, int height)
     renderer.Initialize(context, device);
     //--NoiseData
     world.Initalize();
-    //Chunk chunk;
-    //chunk.FillBlocks(perlin);
-    ////--MeshData.
-    //mesh.GenerateMesh(chunk, perlin);
-    //mesh.InitalizeShaders(device, context);
-    //
-    //mesh.InitializeGeometry(device);
-    
-    //for (int y = 0; y < 32; y++) {
-    //    for (int x = 0; x < 32; x++) {
-    //        chunks[x][y] = new Chunk();
-    //        
-    //        mChunks[x][y] = new Mesh();
-    //    
-    //    }
-    //}
-    world.Initalize();
 
     for (int i = 0; i < THREAD_COUNT; i++) {
         threadPool[i] = std::jthread(&Game::ThreadedWorldGen, this, i);
@@ -113,6 +96,7 @@ void Game::Update(DX::StepTimer const& timer)
 
     // TODO: Add your game logic here.
     elapsedTime;
+
     Game::HandleKeyAndMouse(elapsedTime);
     world.Update((int)cameraPos.x / 32, (int)cameraPos.z / 32);
 }
@@ -266,6 +250,7 @@ void Game::CleanUp()
         gameQuit = true;
         threadPool[i].request_stop();
         WorldRenderer::End();
+        World::ToggleWorldGen();
     }
 }
 #pragma endregion
@@ -325,7 +310,7 @@ void Game::HandleKeyAndMouse(float deltaTime)
     if (kb.R)
     {
         ChunkMesh* ch = &World::GetChunks()->front();
-        if (!ch->Deleted())
+        if (!ch->GetState() == ChunkMesh::Deallocated)
         {
             ch->mesh->MarkDirty();
         }
@@ -335,7 +320,7 @@ void Game::HandleKeyAndMouse(float deltaTime)
         //World::GetChunks().front().mesh->GenerateMesh(World::GetChunks().front().chunk);
     }
     Quaternion q = Quaternion::CreateFromYawPitchRoll(yaw, -pitch, 0);
-
+    move.z -= 1.f;
     move = Vector3::Transform(move, q);
     move *= (double)deltaTime * 100;
 
