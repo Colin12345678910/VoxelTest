@@ -15,6 +15,7 @@
 #include "World.h"
 #include "WorldRenderer.h"
 #include <thread>
+#include <LitVoxelShader.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -78,6 +79,7 @@ private:
 
     std::unique_ptr<DirectX::Keyboard> m_keyboard;
     std::unique_ptr<DirectX::Mouse> m_mouse;
+    LitVoxelShader LitVoxelShaderPS;
 
     double pitch = 0;
     double yaw = 0;

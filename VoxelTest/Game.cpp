@@ -29,6 +29,7 @@ Game::Game() noexcept(false)
 void Game::Initialize(HWND window, int width, int height)
 {
     m_deviceResources->SetWindow(window, width, height);
+    
     Main::windowX = width;
     Main::windowY = height;
     m_deviceResources->CreateDeviceResources();
@@ -39,6 +40,7 @@ void Game::Initialize(HWND window, int width, int height)
 
     auto context = m_deviceResources->GetD3DDeviceContext();
     auto device = m_deviceResources->GetD3DDevice();
+    LitVoxelShaderPS.LoadShader(device);
 
     renderer.Initialize(context, device);
     //--NoiseData
@@ -175,10 +177,10 @@ void Game::ComputeViewProj()
         yaw += XM_2PI;
     }
     
-    double y = sinf(pitch);
-    double r = cosf(pitch);
-    double z = r * cosf(yaw);
-    double x = r * sinf(yaw);
+    double y = sin(pitch);
+    double r = cos(pitch);
+    double z = r * cos(yaw);
+    double x = r * sin(yaw);
 
     look = cameraPos + Vector3(x, y, z);
 

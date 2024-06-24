@@ -82,4 +82,24 @@ namespace DX
             throw com_exception(hr);
         }
     }
+
+    // Helper utility to convert D3D API failures into readable error boxes.
+    inline void ErrorIfFailed(HRESULT hr, std::wstring errorToken)
+    {
+        if (FAILED(hr))
+        {
+            std::wstring errorString = L"An unexpected " + errorToken + L" has occured, this may either be due to a missing resource or a failed installation. \n\nPress OK to attempt to continue, Press Cancel to close the application";
+            int MSGID = MessageBoxW(
+                NULL,  
+                errorString.c_str(),
+                errorToken.c_str(),
+                MB_ICONEXCLAMATION | MB_OKCANCEL
+            );
+
+            if (MSGID == IDCANCEL)
+            {
+                throw com_exception(hr); //Throw an exception that should cause a crash.
+            }
+        }
+    }
 }

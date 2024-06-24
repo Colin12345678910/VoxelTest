@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-int World::RENDER_RADI = 8;
+int World::RENDER_RADI = 48;
 list<ChunkMesh> World::chunks;
 bool World::isRunning = true;
 

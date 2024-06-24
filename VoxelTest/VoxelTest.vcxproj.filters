@@ -11,6 +11,12 @@
     <Filter Include="world">
       <UniqueIdentifier>{a270422c-c875-4f61-ad86-de243847ce30}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{445d7621-944f-4618-97f8-282222c40f44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\HLSL">
+      <UniqueIdentifier>{da3971fb-ece9-4024-8014-4a74a46c637b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -33,6 +39,9 @@
     <ClInclude Include="WorldRenderer.h">
       <Filter>world</Filter>
     </ClInclude>
+    <ClInclude Include="LitVoxelShader.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -52,6 +61,9 @@
     <ClCompile Include="WorldRenderer.cpp">
       <Filter>world</Filter>
     </ClCompile>
+    <ClCompile Include="LitVoxelShader.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -68,5 +80,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="LitVoxelShader.hlsli">
+      <Filter>Shaders\HLSL</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="LitVoxelShaderPS.hlsl">
+      <Filter>Shaders\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="LitVoxelShaderVS.hlsl">
+      <Filter>Shaders\HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
