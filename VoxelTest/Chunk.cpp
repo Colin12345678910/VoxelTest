@@ -47,7 +47,7 @@ void Chunk::FillBlocks(Noise &noise, Vector2 chunk)
 			no *= 2 * noise.Perlin2D((x + chunk.x) * 0.06f, (z + chunk.y) * 0.06f, z * 0.06f); //-1 to 1
 			no *= 1 * noise.Perlin2D((x + chunk.x) * 0.12f, (z + chunk.y) * 0.12f, z * 0.12f); //-1 to 1
 
-			float upper = 16 * noise.Perlin2D((x + chunk.x) * 0.02f, (z + chunk.y) * 0.02f, z * 0.02f);
+			float upper = 32 * noise.Perlin2D((x + chunk.x) * 0.02f, (z + chunk.y) * 0.02f, z * 0.02f);
 			for (int y = 0; y < Chunk::height; y++) {
 				int i = ConvertPosToIndex(Vector3(x,y,z));
 				

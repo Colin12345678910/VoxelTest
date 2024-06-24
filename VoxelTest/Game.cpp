@@ -22,6 +22,7 @@ Game::Game() noexcept(false)
     // TODO: Provide parameters for swapchain format, depth/stencil format, and backbuffer count.
     //   Add DX::DeviceResources::c_AllowTearing to opt-in to variable rate displays.
     //   Add DX::DeviceResources::c_EnableHDR for HDR10 display.
+    
     m_deviceResources->RegisterDeviceNotify(this);
 }
 
@@ -42,7 +43,7 @@ void Game::Initialize(HWND window, int width, int height)
     auto device = m_deviceResources->GetD3DDevice();
     LitVoxelShaderPS.LoadShader(device);
 
-    renderer.Initialize(context, device);
+    renderer.Initialize(context, device, &LitVoxelShaderPS);
     //--NoiseData
     world.Initalize();
 
@@ -153,7 +154,8 @@ void Game::Clear()
     auto context = m_deviceResources->GetD3DDeviceContext();
     auto renderTarget = m_deviceResources->GetRenderTargetView();
     auto depthStencil = m_deviceResources->GetDepthStencilView();
-
+    
+    
     context->ClearRenderTargetView(renderTarget, Colors::CornflowerBlue);
     context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
     context->OMSetRenderTargets(1, &renderTarget, depthStencil);
@@ -318,7 +320,7 @@ void Game::HandleKeyAndMouse(float deltaTime)
          
             //delete ch->mesh;
             ch->mesh->Release(); //It's important to release the mesh before re-creating it to avoid a memory leak.
-            ch->mesh->CreateChunkMesh(ch->chunk, m_deviceResources->GetD3DDevice(), m_deviceResources->GetD3DDeviceContext());
+            ch->mesh->CreateChunkMesh(ch->chunk, m_deviceResources->GetD3DDevice(), m_deviceResources->GetD3DDeviceContext(), &LitVoxelShaderPS);
         }
         
         //chunk.Release();

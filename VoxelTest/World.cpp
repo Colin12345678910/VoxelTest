@@ -3,13 +3,17 @@
 #include <iostream>
 #include <string>
 
-int World::RENDER_RADI = 48;
+int World::RENDER_RADI = 2;
 list<ChunkMesh> World::chunks;
 bool World::isRunning = true;
 
 World::World()
 {
-
+#ifdef NDEBUG
+	RENDER_RADI = 48;
+#else 
+	RENDER_RADI = 8;
+#endif
 }
 World::~World()
 {

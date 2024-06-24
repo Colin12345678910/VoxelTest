@@ -1,4 +1,9 @@
-float4 main( float4 pos : POSITION ) : SV_POSITION
+#include "LitVoxelShader.hlsli"
+
+PS_INPUT main( VS_INPUT input )
 {
-	return pos;
+	PS_INPUT output;
+	output.Pos = mul(input.Pos, worldViewProjectionMatrix);
+	output.Color = input.Color;
+	return output;
 }

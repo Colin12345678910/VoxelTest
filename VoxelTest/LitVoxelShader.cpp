@@ -12,20 +12,39 @@ struct ShaderConsts
 
 LitVoxelShader::LitVoxelShader()
 {
-	pLitShader = NULL;
+	pLitShaderPS = NULL;
 	pLitShaderBlob = NULL;
+	pLitShaderVS = NULL;
+	pLitShaderBlobVS = NULL;
 	pConstantBuffer = NULL;
 }
 
 void LitVoxelShader::LoadShader(ID3D11Device* device)
 {
 	//D3DWriteBlobToFile(pLitShaderBlob, L"..//Test", TRUE);
+#ifdef NDEBUG
 	HRESULT hr = D3DReadFileToBlob(L"..//x64//Release//LitVoxelShaderPS.cso", &pLitShaderBlob);
+#else 
+	HRESULT hr = D3DReadFileToBlob(L"..//x64//Debug//LitVoxelShaderPS.cso", &pLitShaderBlob);
+#endif
+	
 	
 	DX::ErrorIfFailed(hr, L"DX_MissingVoxelPS");
 
-	hr = device->CreatePixelShader(pLitShaderBlob->GetBufferPointer(), pLitShaderBlob->GetBufferSize(), NULL, &pLitShader);
+	hr = device->CreatePixelShader(pLitShaderBlob->GetBufferPointer(), pLitShaderBlob->GetBufferSize(), NULL, &pLitShaderPS);
 	DX::ErrorIfFailed(hr, L"DX_CannotCreateVoxelPS");
+
+#ifdef NDEBUG
+	hr = D3DReadFileToBlob(L"..//x64//Release//LitVoxelShaderVS.cso", &pLitShaderBlobVS);
+#else 
+	hr = D3DReadFileToBlob(L"..//x64//Debug//LitVoxelShaderVS.cso", &pLitShaderBlobVS);
+#endif
+
+
+	DX::ErrorIfFailed(hr, L"DX_MissingVoxelVS");
+
+	hr = device->CreateVertexShader(pLitShaderBlobVS->GetBufferPointer(), pLitShaderBlobVS->GetBufferSize(), NULL, &pLitShaderVS);
+	DX::ErrorIfFailed(hr, L"DX_CannotCreateVoxelVS");
 	
 	ShaderConsts init;
 
@@ -45,9 +64,32 @@ void LitVoxelShader::LoadShader(ID3D11Device* device)
 	DX::ErrorIfFailed(hr, L"DX_CannotCreateBuffer");
 }
 
+void LitVoxelShader::SetupShader(const Matrix& world, const Matrix& view, const Matrix& projection, ID3D11DeviceContext* pContext)
+{
+	ShaderConsts* shaderConsts;
+	D3D11_MAPPED_SUBRESOURCE constantResource;
+
+	//Get a pointer
+	pContext->Map(pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantResource);
+	shaderConsts = (ShaderConsts*)constantResource.pData; //Assign the shaderConsts class to the constantResource's data;
+
+	shaderConsts->projMat = projection.Transpose();
+	shaderConsts->viewMat = view.Transpose();
+	shaderConsts->worldMat = world.Transpose();
+	shaderConsts->worldViewProjMat = (world * view * projection).Transpose();
+
+	pContext->Unmap(pConstantBuffer, 0);
+
+	pContext->PSSetShader(pLitShaderPS, NULL, 0);
+	pContext->VSSetShader(pLitShaderVS, NULL, 0);
+
+	pContext->VSSetConstantBuffers(0, 1, &pConstantBuffer);
+	pContext->PSSetConstantBuffers(0, 1, &pConstantBuffer);
+}
+
 void LitVoxelShader::Release()
 {
-	pLitShader->Release();
+	pLitShaderPS->Release();
 	pLitShaderBlob->Release();
 	pConstantBuffer->Release();
 }

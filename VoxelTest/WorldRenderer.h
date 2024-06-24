@@ -4,6 +4,7 @@
 #include <VertexTypes.h>
 #include "ChunkMesh.h"
 #include "Chunk.h"
+#include "LitVoxelShader.h"
 
 
 #include <Thread>
@@ -15,7 +16,7 @@ class WorldRenderer
 {
 public:
 	void Render(const Matrix& view, const Matrix& world, const Matrix& projection);
-	void Initialize(ID3D11DeviceContext* DeviceContext, ID3D11Device* Device);
+	void Initialize(ID3D11DeviceContext* DeviceContext, ID3D11Device* Device, LitVoxelShader* litVoxelS);
 	static void End() { HasEnded = true; }
 private:
 	static const int THREAD_COUNT = 12;
@@ -25,5 +26,6 @@ private:
 	int Modulo(int a, int b);
 	ID3D11DeviceContext* Context;
 	ID3D11Device* D3DDevice;
+	LitVoxelShader* litVoxelShader;
 };
 

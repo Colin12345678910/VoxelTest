@@ -17,17 +17,21 @@ void WorldRenderer::Render(const Matrix& view, const Matrix& world, const Matrix
 		else
 		{
 			Matrix mat = mat.CreateTranslation(Vector3(chunk.chunk->GetChunkPos().x * Chunk::depth, 0, chunk.chunk->GetChunkPos().y * Chunk::width));
-			chunk.mesh->Draw(Context, view, mat, projection);
+			
+			chunk.mesh->Draw(Context, view, mat, projection, litVoxelShader);
 		}
 	}
 
 	
 }
 
-void WorldRenderer::Initialize(ID3D11DeviceContext* DeviceContext, ID3D11Device* Device)
+void WorldRenderer::Initialize(ID3D11DeviceContext* DeviceContext, ID3D11Device* Device, LitVoxelShader* litVoxelS)
 {
 	D3DDevice = Device;
 	Context = DeviceContext;
+	litVoxelShader = litVoxelS;
+
+	
 	for (int i = 0; i < THREAD_COUNT; i++)
 	{
 		threadPool[i] = jthread(&WorldRenderer::MeshThread, this, i);
@@ -48,7 +52,7 @@ void WorldRenderer::MeshThread(int threadNum)
 		{
 			if (iter->GetState() == ChunkMesh::Placed)
 			{
-				if (iter->mesh->CreateChunkMesh(iter->chunk, D3DDevice, Context))
+				if (iter->mesh->CreateChunkMesh(iter->chunk, D3DDevice, Context, litVoxelShader))
 				{
 					iter->SetState(ChunkMesh::Meshed);
 				}

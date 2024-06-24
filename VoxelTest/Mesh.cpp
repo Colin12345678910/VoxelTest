@@ -12,14 +12,14 @@ int num_blocks = 16;
 
 
 
-bool Mesh::CreateChunkMesh(Chunk* chunk, ID3D11Device* D3DDevice, ID3D11DeviceContext* context)
+bool Mesh::CreateChunkMesh(Chunk* chunk, ID3D11Device* D3DDevice, ID3D11DeviceContext* context, LitVoxelShader* litShader)
 {
 	//std::jthread t(&Mesh::ThreadMesh, this, chunk, D3DDevice, context);
 	//if (MarkForDeletion) return;
 	//if (!isDirty) return;
 	if (!mutex.try_lock()) return false;
 	GenerateMesh(chunk);
-	InitalizeShaders(D3DDevice, context);
+	InitalizeShaders(D3DDevice, context, litShader);
 	InitializeGeometry(D3DDevice);
 	isDirty = false;
 	
@@ -229,38 +229,35 @@ void Mesh::InitializeGeometry(ID3D11Device* D3DDevice)
 	DX::ThrowIfFailed(D3DDevice->CreateBuffer(&indicesBuffer, &indexData, &pIndicesBuffer));
 }
 
-void Mesh::InitalizeShaders(ID3D11Device* D3DDevice, ID3D11DeviceContext* context)
+void Mesh::InitalizeShaders(ID3D11Device* D3DDevice, ID3D11DeviceContext* context, LitVoxelShader* litShader)
 {
-	pEffect = new BasicEffect(D3DDevice);
-	pEffect->SetLightingEnabled(false);
-	pEffect->SetTextureEnabled(false);
-	pEffect->SetVertexColorEnabled(true);
-	
-	D3D11_INPUT_ELEMENT_DESC layoutDesc[] = {
-		{ "SV_Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
+	//pEffect = new BasicEffect(D3DDevice);
+	//pEffect->SetLightingEnabled(false);
+	//pEffect->SetTextureEnabled(false);
+	//pEffect->SetVertexColorEnabled(true);
+	//
+	//D3D11_INPUT_ELEMENT_DESC layoutDesc[] = {
+	//	{ "SV_POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//};
 
-	void const* shaderByteCode;
-	size_t byteCodeLength;
+	//void const* shaderByteCode;
+	//size_t byteCodeLength;
 
-	pEffect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
+	//pEffect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
 
 	DX::ThrowIfFailed(D3DDevice->CreateInputLayout(
-		layoutDesc, 2,
-		shaderByteCode, byteCodeLength,
+		VertexPositionColor::InputElements, VertexPositionColor::InputElementCount,
+		litShader->GetShaderBinVS(), litShader->GetSizeVS(),
 		&pInputLayout
 	));
 
 	
 }
 
-void Mesh::Draw(ID3D11DeviceContext* DeviceContext, const Matrix& view, const Matrix& world, const Matrix& projection)
+void Mesh::Draw(ID3D11DeviceContext* DeviceContext, const Matrix& view, const Matrix& world, const Matrix& projection, LitVoxelShader* litShader)
 {
-	pEffect->SetWorld(world);
-	pEffect->SetView(view);
-	pEffect->SetProjection(projection);
-	pEffect->Apply(DeviceContext);
+	litShader->SetupShader(world, view, projection, DeviceContext);
 
 	DeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 

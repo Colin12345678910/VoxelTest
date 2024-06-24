@@ -3,6 +3,7 @@
 #include <Effects.h>
 #include <VertexTypes.h>
 #include "Chunk.h"
+#include "LitVoxelShader.h"
 #include <mutex>
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -11,12 +12,12 @@ using DirectX::VertexPositionColor;
 class Mesh
 {
 public:
-	bool CreateChunkMesh(Chunk* chunk, ID3D11Device* D3DDevice, ID3D11DeviceContext* context);
+	bool CreateChunkMesh(Chunk* chunk, ID3D11Device* D3DDevice, ID3D11DeviceContext* context, LitVoxelShader* litShader);
 	
 	void AddCubeMesh(Vector3 pos, bool up, bool down, bool left, bool right, bool front, bool back);
 	void InitializeGeometry(ID3D11Device* D3DDevice);
-	void InitalizeShaders(ID3D11Device* D3DDevice, ID3D11DeviceContext* context);
-	void Draw(ID3D11DeviceContext* DeviceContext, const Matrix& view, const Matrix& world, const Matrix& projection);
+	void InitalizeShaders(ID3D11Device* D3DDevice, ID3D11DeviceContext* context, LitVoxelShader* litShader);
+	void Draw(ID3D11DeviceContext* DeviceContext, const Matrix& view, const Matrix& world, const Matrix& projection, LitVoxelShader* litshader);
 	void MarkDeletion() {
 		MarkForDeletion = true;
 		isDirty = false;
