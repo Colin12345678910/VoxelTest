@@ -127,7 +127,7 @@
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
     <FxCompile>
-      <ShaderModel>6.6</ShaderModel>
+      <ShaderModel>5.0</ShaderModel>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -197,6 +197,8 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Noise.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="RenderTexture.h" />
+    <ClInclude Include="ShadowMapper.h" />
     <ClInclude Include="StepTimer.h" />
     <ClInclude Include="World.h" />
     <ClInclude Include="WorldRenderer.h" />
@@ -217,6 +219,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="RenderTexture.cpp" />
+    <ClCompile Include="ShadowMapper.cpp" />
     <ClCompile Include="World.cpp" />
     <ClCompile Include="WorldRenderer.cpp" />
   </ItemGroup>

@@ -14,8 +14,10 @@
 #include "Noise.h"
 #include "World.h"
 #include "WorldRenderer.h"
+#include "ShadowMapper.h"
 #include <thread>
 #include <LitVoxelShader.h>
+#include <SpriteBatch.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -99,6 +101,10 @@ private:
     // Device resources.
     std::unique_ptr<DX::DeviceResources>    m_deviceResources;
 
+
+    // DepthStencilState
+    ID3D11DepthStencilState* pDepthStencilState;
+
     //Threads (For Generation
     static const int THREAD_COUNT = 1;
     std::jthread threadPool[THREAD_COUNT];
@@ -106,4 +112,7 @@ private:
     
     // Rendering loop timer.
     DX::StepTimer                           m_timer;
+
+    ShadowMapper shadowMapper;
+    std::unique_ptr<SpriteBatch> spriteBatch;
 };

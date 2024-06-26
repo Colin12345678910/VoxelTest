@@ -10,7 +10,7 @@ bool World::isRunning = true;
 World::World()
 {
 #ifdef NDEBUG
-	RENDER_RADI = 48;
+	RENDER_RADI = 32;
 #else 
 	RENDER_RADI = 8;
 #endif

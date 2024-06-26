@@ -41,6 +41,23 @@ void Game::Initialize(HWND window, int width, int height)
 
     auto context = m_deviceResources->GetD3DDeviceContext();
     auto device = m_deviceResources->GetD3DDevice();
+
+    /*
+    * This is a bog standard depthDesc so we can unbreak the state after using a spritebatch.
+    */
+    D3D11_DEPTH_STENCIL_DESC depthDesc;
+    depthDesc.DepthEnable = true;
+    depthDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+    depthDesc.DepthFunc = D3D11_COMPARISON_LESS;
+    depthDesc.StencilEnable = FALSE;
+    depthDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+    depthDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+
+    device->CreateDepthStencilState(&depthDesc, &pDepthStencilState);
+
+
+    spriteBatch = std::make_unique<SpriteBatch>(context);
+    shadowMapper.Init(device);
     LitVoxelShaderPS.LoadShader(device);
 
     renderer.Initialize(context, device, &LitVoxelShaderPS);
@@ -109,24 +126,44 @@ void Game::Update(DX::StepTimer const& timer)
 // Draws the scene.
 void Game::Render()
 {
-    ComputeViewProj();
+    
     // Don't try to render anything before the first Update.
     if (m_timer.GetFrameCount() == 0)
     {
         return;
     }
-   
+    Vector3 worldOrigin = cameraPos;
+    worldOrigin.y = 128;
+    viewMatrix = Matrix::CreateLookAt(Vector3(cameraPos.x + 500, 500, cameraPos.z + 500), worldOrigin, Vector3::UnitY);
     
-    Clear();
+    projectionMatrix = Matrix::CreateOrthographic(256, 256, 0.001, 8000);
 
-    m_deviceResources->PIXBeginEvent(L"Render");
+
+
+    m_deviceResources->PIXBeginEvent(L"ShadowMap");
+    DXGI_FORMAT fo = m_deviceResources->GetBackBufferFormat();
+    shadowMapper.RenderShadowMap(m_deviceResources->GetD3DDevice(), m_deviceResources->GetD3DDeviceContext(), m_deviceResources->GetDepthStencilView());
+    renderer.Render(viewMatrix, Matrix::Identity, projectionMatrix);
+    m_deviceResources->PIXEndEvent();
+
+    Clear();
+    ComputeViewProj();
+    
     auto context = m_deviceResources->GetD3DDeviceContext();
     auto device = m_deviceResources->GetD3DDevice();
+    m_deviceResources->PIXBeginEvent(L"Render");
+    
     renderer.Render(viewMatrix, Matrix::Identity, projectionMatrix);
     // TODO: Add your rendering code here.
     //context;
-    
-    
+
+    spriteBatch->Begin();
+    //(_In_ ID3D11ShaderResourceView* texture, XMFLOAT2 const& position, _In_opt_ RECT const* sourceRectangle, FXMVECTOR color = Colors::White, float rotation = 0, XMFLOAT2 const& origin = Float2Zero, float scale = 1, SpriteEffects effects = SpriteEffects_None, float layerDepth = 0);
+    spriteBatch->Draw(shadowMapper.GetShaderResourceView(), XMFLOAT2(0, 0), NULL, Colors::White.v, 0.0f, XMFLOAT2(0, 0), 0.1f);
+    spriteBatch->End();
+
+    ID3D11ShaderResourceView* nullsrv[] = { nullptr };
+    context->PSSetShaderResources(0, 1, nullsrv);
     
     //for (int x = 0; x < 32; x++) {
     //    for (int y = 0; y < 32; y++) {
@@ -143,6 +180,10 @@ void Game::Render()
 
     // Show the new frame.
     m_deviceResources->Present();
+
+
+    //Revert the depthState
+    context->OMSetDepthStencilState(pDepthStencilState, 1);
 }
 
 // Helper method to clear the back buffers.
@@ -152,6 +193,7 @@ void Game::Clear()
 
     // Clear the views.
     auto context = m_deviceResources->GetD3DDeviceContext();
+    auto device = m_deviceResources->GetD3DDevice();
     auto renderTarget = m_deviceResources->GetRenderTargetView();
     auto depthStencil = m_deviceResources->GetDepthStencilView();
     
@@ -159,7 +201,9 @@ void Game::Clear()
     context->ClearRenderTargetView(renderTarget, Colors::CornflowerBlue);
     context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
     context->OMSetRenderTargets(1, &renderTarget, depthStencil);
-
+    
+    
+    
     // Set the viewport.
     auto const viewport = m_deviceResources->GetScreenViewport();
     context->RSSetViewports(1, &viewport);
