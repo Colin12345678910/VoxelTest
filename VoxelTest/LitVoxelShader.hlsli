@@ -5,8 +5,13 @@ cbuffer Constants : register(b0)
     matrix viewMatrix;
     matrix projectionMatrix;
     matrix worldViewProjectionMatrix;
-    matrix worldMatrixIT;
+    matrix shadowCoord;
 };
+
+Texture2D shadowTex : register(t0);
+sampler sam : register(s0);
+
+
 
 struct VS_INPUT
 {
@@ -17,6 +22,8 @@ struct VS_INPUT
 struct PS_INPUT
 {
     float4 Pos : SV_POSITION;
+    float4 LightPos : TEXCOORD0;
+    float3 WorldPosition : TEXCOORD1;
     float4 Color : COLOR;
     
 };

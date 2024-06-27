@@ -15,6 +15,7 @@
 #include "World.h"
 #include "WorldRenderer.h"
 #include "ShadowMapper.h"
+#include "WICTextureLoader.h"
 #include <thread>
 #include <LitVoxelShader.h>
 #include <SpriteBatch.h>
@@ -32,6 +33,14 @@ public:
     
     Matrix viewMatrix;
     Matrix projectionMatrix;
+
+    Matrix shadowScaler
+    {
+        0.5, 0,   0,   0.5,
+        0,   0.5, 0,   0.5,
+        0,   0,   0.5, 0.5,
+        0,   0,   0,    1
+    };
 
     Game() noexcept(false);
     ~Game() = default;
@@ -108,11 +117,13 @@ private:
     //Threads (For Generation
     static const int THREAD_COUNT = 1;
     std::jthread threadPool[THREAD_COUNT];
-    
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
     
     // Rendering loop timer.
     DX::StepTimer                           m_timer;
 
     ShadowMapper shadowMapper;
     std::unique_ptr<SpriteBatch> spriteBatch;
+
+    ID3D11SamplerState* pSamplerState;
 };

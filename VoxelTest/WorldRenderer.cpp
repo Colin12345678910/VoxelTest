@@ -3,7 +3,7 @@
 #include "World.h"
 
 bool WorldRenderer::HasEnded = false;
-void WorldRenderer::Render(const Matrix& view, const Matrix& world, const Matrix& projection)
+void WorldRenderer::Render(const Matrix& view, const Matrix& world, const Matrix& projection, const Matrix& shadowCoord, bool isLit)
 {
 	list<ChunkMesh> chunks = *World::GetChunks();
 	//chunks.begin();
@@ -18,7 +18,7 @@ void WorldRenderer::Render(const Matrix& view, const Matrix& world, const Matrix
 		{
 			Matrix mat = mat.CreateTranslation(Vector3(chunk.chunk->GetChunkPos().x * Chunk::depth, 0, chunk.chunk->GetChunkPos().y * Chunk::width));
 			
-			chunk.mesh->Draw(Context, view, mat, projection, litVoxelShader);
+			chunk.mesh->Draw(Context, view, mat, projection, shadowCoord, litVoxelShader, isLit);
 		}
 	}
 

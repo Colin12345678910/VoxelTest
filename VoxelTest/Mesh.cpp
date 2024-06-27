@@ -255,9 +255,9 @@ void Mesh::InitalizeShaders(ID3D11Device* D3DDevice, ID3D11DeviceContext* contex
 	
 }
 
-void Mesh::Draw(ID3D11DeviceContext* DeviceContext, const Matrix& view, const Matrix& world, const Matrix& projection, LitVoxelShader* litShader)
+void Mesh::Draw(ID3D11DeviceContext* DeviceContext, const Matrix& view, const Matrix& world, const Matrix& projection, const Matrix& shadowCoord, LitVoxelShader* litShader, bool isLit)
 {
-	litShader->SetupShader(world, view, projection, DeviceContext);
+	litShader->SetupShader(world, view, projection, shadowCoord, DeviceContext, !isLit);
 
 	DeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 

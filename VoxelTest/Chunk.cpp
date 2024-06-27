@@ -54,15 +54,21 @@ void Chunk::FillBlocks(Noise &noise, Vector2 chunk)
 				
 				float noi = 8 * no + 64;
 
-				
+				if (worldXPos == 0 && worldYPos > 0)
+				{
 
-				if (y > noi && y < (64 - upper)) {
-				//if (y < upper + 64) {
-					blocks[i] = 1;
-					isEmpty[y] = false;
+					//if (y > noi && y < (64 - upper)) {
+					if (y < upper + 128) {
+						blocks[i] = 1;
+						isEmpty[y] = false;
+					}
+					else {
+						blocks[i] = 0;
+					}
 				}
-				else {
-					blocks[i] = 0;
+				if (y == 1)
+				{
+					blocks[i] = 1;
 				}
 			}
 		}

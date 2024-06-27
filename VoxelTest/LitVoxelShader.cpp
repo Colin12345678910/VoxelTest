@@ -8,6 +8,7 @@ struct ShaderConsts
 	Matrix viewMat;
 	Matrix projMat;
 	Matrix worldViewProjMat;
+	Matrix shadowCOORD;
 };
 
 LitVoxelShader::LitVoxelShader()
@@ -33,6 +34,18 @@ void LitVoxelShader::LoadShader(ID3D11Device* device)
 
 	hr = device->CreatePixelShader(pLitShaderBlob->GetBufferPointer(), pLitShaderBlob->GetBufferSize(), NULL, &pLitShaderPS);
 	DX::ErrorIfFailed(hr, L"DX_CannotCreateVoxelPS");
+
+#ifdef NDEBUG
+	hr = D3DReadFileToBlob(L"..//x64//Release//UnLitVoxelShaderPS.cso", &pUnLitShaderBlob);
+#else 
+	hr = D3DReadFileToBlob(L"..//x64//Debug//UnLitVoxelShaderPS.cso", &pUnLitShaderBlob);
+#endif
+
+
+	DX::ErrorIfFailed(hr, L"DX_MissingUnlitVoxelPS");
+
+	hr = device->CreatePixelShader(pUnLitShaderBlob->GetBufferPointer(), pUnLitShaderBlob->GetBufferSize(), NULL, &pUnLitShaderPS);
+	DX::ErrorIfFailed(hr, L"DX_CannotCreateUnlitVoxelPS");
 
 #ifdef NDEBUG
 	hr = D3DReadFileToBlob(L"..//x64//Release//LitVoxelShaderVS.cso", &pLitShaderBlobVS);
@@ -64,7 +77,12 @@ void LitVoxelShader::LoadShader(ID3D11Device* device)
 	DX::ErrorIfFailed(hr, L"DX_CannotCreateBuffer");
 }
 
-void LitVoxelShader::SetupShader(const Matrix& world, const Matrix& view, const Matrix& projection, ID3D11DeviceContext* pContext)
+void LitVoxelShader::SetupShader(const Matrix& world, const Matrix& view, const Matrix& projection, const Matrix& shadowCoord, ID3D11DeviceContext* Context)
+{
+	SetupShader(world, view, projection, shadowCoord, Context, false);
+}
+
+void LitVoxelShader::SetupShader(const Matrix& world, const Matrix& view, const Matrix& projection, const Matrix& shadowCoord, ID3D11DeviceContext* pContext, bool isUnlit)
 {
 	ShaderConsts* shaderConsts;
 	D3D11_MAPPED_SUBRESOURCE constantResource;
@@ -77,15 +95,24 @@ void LitVoxelShader::SetupShader(const Matrix& world, const Matrix& view, const 
 	shaderConsts->viewMat = view.Transpose();
 	shaderConsts->worldMat = world.Transpose();
 	shaderConsts->worldViewProjMat = (world * view * projection).Transpose();
+	shaderConsts->shadowCOORD = (world * shadowCoord).Transpose();
 
 	pContext->Unmap(pConstantBuffer, 0);
 
-	pContext->PSSetShader(pLitShaderPS, NULL, 0);
+	if (isUnlit)
+	{
+		pContext->PSSetShader(pUnLitShaderPS, NULL, 0);
+	}
+	else {
+		pContext->PSSetShader(pLitShaderPS, NULL, 0);
+	}
+	
 	pContext->VSSetShader(pLitShaderVS, NULL, 0);
 
 	pContext->VSSetConstantBuffers(0, 1, &pConstantBuffer);
 	pContext->PSSetConstantBuffers(0, 1, &pConstantBuffer);
 }
+
 
 void LitVoxelShader::Release()
 {

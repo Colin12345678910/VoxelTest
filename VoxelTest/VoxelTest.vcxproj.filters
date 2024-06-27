@@ -76,6 +76,9 @@
     <Image Include="directx.ico">
       <Filter>Assets</Filter>
     </Image>
+    <Image Include="C:\Users\Linka\Documents\NoTex.png">
+      <Filter>Assets</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">
@@ -93,6 +96,9 @@
       <Filter>Shaders\HLSL</Filter>
     </FxCompile>
     <FxCompile Include="LitVoxelShaderVS.hlsl">
+      <Filter>Shaders\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="UnlitVoxelShaderPS.hlsl">
       <Filter>Shaders\HLSL</Filter>
     </FxCompile>
   </ItemGroup>

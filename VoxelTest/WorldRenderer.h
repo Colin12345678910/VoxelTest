@@ -15,7 +15,7 @@ class WorldRenderer
 
 {
 public:
-	void Render(const Matrix& view, const Matrix& world, const Matrix& projection);
+	void Render(const Matrix& view, const Matrix& world, const Matrix& projection, const Matrix& shadowCoord, bool isLit);
 	void Initialize(ID3D11DeviceContext* DeviceContext, ID3D11Device* Device, LitVoxelShader* litVoxelS);
 	static void End() { HasEnded = true; }
 private:

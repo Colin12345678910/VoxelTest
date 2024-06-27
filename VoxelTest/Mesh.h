@@ -17,7 +17,7 @@ public:
 	void AddCubeMesh(Vector3 pos, bool up, bool down, bool left, bool right, bool front, bool back);
 	void InitializeGeometry(ID3D11Device* D3DDevice);
 	void InitalizeShaders(ID3D11Device* D3DDevice, ID3D11DeviceContext* context, LitVoxelShader* litShader);
-	void Draw(ID3D11DeviceContext* DeviceContext, const Matrix& view, const Matrix& world, const Matrix& projection, LitVoxelShader* litshader);
+	void Draw(ID3D11DeviceContext* DeviceContext, const Matrix& view, const Matrix& world, const Matrix& projection, const Matrix& shadowCoord, LitVoxelShader* litshader, bool isLit);
 	void MarkDeletion() {
 		MarkForDeletion = true;
 		isDirty = false;

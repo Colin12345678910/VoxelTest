@@ -35,7 +35,7 @@ void RenderTexture::Init(ID3D11Device* device, int x, int y, DXGI_FORMAT rtForma
 		y,
 		1, // This depth stencil view has only one texture.
 		1, // Use a single mipmap level.
-		D3D11_BIND_DEPTH_STENCIL
+		D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE
 	);
 
 	DX::ThrowIfFailed(device->CreateTexture2D(
@@ -44,9 +44,15 @@ void RenderTexture::Init(ID3D11Device* device, int x, int y, DXGI_FORMAT rtForma
 		depthStencil.ReleaseAndGetAddressOf()
 	));
 
+	D3D11_DEPTH_STENCIL_VIEW_DESC depthDesc = CD3D11_DEPTH_STENCIL_VIEW_DESC();
+	depthDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	depthDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+
+	
+
 	DX::ThrowIfFailed(device->CreateDepthStencilView(
 		depthStencil.Get(),
-		nullptr,
+		&depthDesc,
 		depthStencilView.ReleaseAndGetAddressOf()
 	));
 
@@ -65,12 +71,25 @@ void RenderTexture::Init(ID3D11Device* device, int x, int y, DXGI_FORMAT rtForma
 		D3D11_SRV_DIMENSION_TEXTURE2D, rtFormat
 	);
 
+	CD3D11_SHADER_RESOURCE_VIEW_DESC stencilResourceDesc(
+		D3D11_SRV_DIMENSION_TEXTURE2D, DXGI_FORMAT_R32_FLOAT
+	);
+
 	DX::ErrorIfFailed(device->CreateShaderResourceView(
 		renderTarget.Get(),
 		&shaderResourceDesc,
 		m_shaderResourceView.ReleaseAndGetAddressOf()
 	),
 		L"Invalid ShaderResourceView");
+
+	DX::ErrorIfFailed(device->CreateShaderResourceView(
+		depthStencil.Get(),
+		&stencilResourceDesc,
+		depthResourceView.ReleaseAndGetAddressOf()
+	),
+		L"Invalid ShaderResourceView");
+
+	
 }
 
 void RenderTexture::Release()

@@ -41,6 +41,21 @@ void Game::Initialize(HWND window, int width, int height)
 
     auto context = m_deviceResources->GetD3DDeviceContext();
     auto device = m_deviceResources->GetD3DDevice();
+    
+    D3D11_SAMPLER_DESC sampleDesc;
+    sampleDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    sampleDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+    sampleDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+    sampleDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+    sampleDesc.MipLODBias = 0;
+    sampleDesc.MaxAnisotropy = 1;
+    sampleDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    sampleDesc.BorderColor[0] = 0.0f;
+    sampleDesc.BorderColor[1] = 0.0f;
+    sampleDesc.BorderColor[2] = 0.0f;
+    sampleDesc.BorderColor[3] = 0.0f;
+
+    DX::ErrorIfFailed(device->CreateSamplerState(&sampleDesc, &pSamplerState), L"Invalid Sampler state");
 
     /*
     * This is a bog standard depthDesc so we can unbreak the state after using a spritebatch.
@@ -133,17 +148,20 @@ void Game::Render()
         return;
     }
     Vector3 worldOrigin = cameraPos;
-    worldOrigin.y = 128;
-    viewMatrix = Matrix::CreateLookAt(Vector3(cameraPos.x + 500, 500, cameraPos.z + 500), worldOrigin, Vector3::UnitY);
+    worldOrigin.y = 0;
+    viewMatrix = Matrix::CreateLookAt(Vector3(1000, 1000, 1000), Vector3::One, Vector3::UnitY);
     
-    projectionMatrix = Matrix::CreateOrthographic(256, 256, 0.001, 8000);
+    projectionMatrix = Matrix::CreateOrthographic(512, 512, 1000, 3000);
+
+    Matrix shadowC = (viewMatrix * projectionMatrix);
 
 
 
     m_deviceResources->PIXBeginEvent(L"ShadowMap");
     DXGI_FORMAT fo = m_deviceResources->GetBackBufferFormat();
     shadowMapper.RenderShadowMap(m_deviceResources->GetD3DDevice(), m_deviceResources->GetD3DDeviceContext(), m_deviceResources->GetDepthStencilView());
-    renderer.Render(viewMatrix, Matrix::Identity, projectionMatrix);
+    renderer.Render(viewMatrix, Matrix::Identity, projectionMatrix, shadowC, false);
+    
     m_deviceResources->PIXEndEvent();
 
     Clear();
@@ -151,11 +169,22 @@ void Game::Render()
     
     auto context = m_deviceResources->GetD3DDeviceContext();
     auto device = m_deviceResources->GetD3DDevice();
+
+
+    
+
+    context->PSSetShaderResources(0, 1, shadowMapper.GetStencilShaderRV());
+    context->PSSetSamplers(0, 1, &pSamplerState);
+    
+    
+
     m_deviceResources->PIXBeginEvent(L"Render");
     
-    renderer.Render(viewMatrix, Matrix::Identity, projectionMatrix);
+    renderer.Render(viewMatrix, Matrix::Identity, projectionMatrix, shadowC, true);
     // TODO: Add your rendering code here.
     //context;
+
+
 
     spriteBatch->Begin();
     //(_In_ ID3D11ShaderResourceView* texture, XMFLOAT2 const& position, _In_opt_ RECT const* sourceRectangle, FXMVECTOR color = Colors::White, float rotation = 0, XMFLOAT2 const& origin = Float2Zero, float scale = 1, SpriteEffects effects = SpriteEffects_None, float layerDepth = 0);
@@ -310,6 +339,10 @@ void Game::CreateDeviceDependentResources()
     auto device = m_deviceResources->GetD3DDevice();
 
     // TODO: Initialize device dependent objects here (independent of window size).
+
+    DX::ThrowIfFailed(
+        CreateWICTextureFromFile(device, L"C:\\Users\\Linka\\Documents\\NoTex.png", nullptr,
+            m_texture.ReleaseAndGetAddressOf()));
     device;
 }
 
