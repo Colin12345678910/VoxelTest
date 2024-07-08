@@ -163,10 +163,10 @@ void Mesh::AddCubeMesh(Vector3 pos, bool up, bool down, bool left, bool right, b
 	if (up)
 	{
 		offset = verts.size();
-		verts.push_back({ Vector3(0.0f, 1.0f, 0.0f) + pos, Color(pos.y, pos.y, pos.y)});
-		verts.push_back({ Vector3(0.0f, 1.0f, 1.0f) + pos, Color(pos.y, pos.y, pos.y) });
-		verts.push_back({ Vector3(1.0f, 1.0f, 0.0f) + pos, Color(pos.y, pos.y, pos.y) });
-		verts.push_back({ Vector3(1.0f, 1.0f, 1.0f) + pos, Color(pos.y, pos.y, pos.y) });
+		verts.push_back({ Vector3(0.0f, 1.0f, 0.0f) + pos, Colors::White.v});
+		verts.push_back({ Vector3(0.0f, 1.0f, 1.0f) + pos, Colors::White.v });
+		verts.push_back({ Vector3(1.0f, 1.0f, 0.0f) + pos, Colors::White.v });
+		verts.push_back({ Vector3(1.0f, 1.0f, 1.0f) + pos, Colors::White.v });
 
 		indexs.push_back(2 + offset);
 		indexs.push_back(1 + offset);

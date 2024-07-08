@@ -50,10 +50,10 @@ void Game::Initialize(HWND window, int width, int height)
     sampleDesc.MipLODBias = 0;
     sampleDesc.MaxAnisotropy = 1;
     sampleDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-    sampleDesc.BorderColor[0] = 0.0f;
-    sampleDesc.BorderColor[1] = 0.0f;
-    sampleDesc.BorderColor[2] = 0.0f;
-    sampleDesc.BorderColor[3] = 0.0f;
+    sampleDesc.BorderColor[0] = 1.0f;
+    sampleDesc.BorderColor[1] = 1.0f;
+    sampleDesc.BorderColor[2] = 1.0f;
+    sampleDesc.BorderColor[3] = 1.0f;
 
     DX::ErrorIfFailed(device->CreateSamplerState(&sampleDesc, &pSamplerState), L"Invalid Sampler state");
 
@@ -148,10 +148,10 @@ void Game::Render()
         return;
     }
     Vector3 worldOrigin = cameraPos;
-    worldOrigin.y = 0;
-    viewMatrix = Matrix::CreateLookAt(Vector3(1000, 1000, 1000), Vector3::One, Vector3::UnitY);
+    worldOrigin.y = 128;
+    viewMatrix = Matrix::CreateLookAt(Vector3(1000 + cameraPos.x, 1000 , 1000 + cameraPos.z), worldOrigin, Vector3::UnitY);
     
-    projectionMatrix = Matrix::CreateOrthographic(512, 512, 1000, 3000);
+    projectionMatrix = Matrix::CreateOrthographic(512, 512, 1250, 3000);
 
     Matrix shadowC = (viewMatrix * projectionMatrix);
 

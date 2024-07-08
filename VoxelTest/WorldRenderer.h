@@ -2,6 +2,7 @@
 #include <SimpleMath.h>
 #include <Effects.h>
 #include <VertexTypes.h>
+#include <DirectXCollision.h>
 #include "ChunkMesh.h"
 #include "Chunk.h"
 #include "LitVoxelShader.h"
@@ -21,6 +22,8 @@ public:
 private:
 	static const int THREAD_COUNT = 12;
 	static bool HasEnded;
+	BoundingFrustum frustrum;
+	BoundingBox box;
 	std::jthread threadPool[THREAD_COUNT];
 	void MeshThread(int threadNum);
 	int Modulo(int a, int b);

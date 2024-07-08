@@ -16,9 +16,21 @@ void WorldRenderer::Render(const Matrix& view, const Matrix& world, const Matrix
 		}
 		else
 		{
-			Matrix mat = mat.CreateTranslation(Vector3(chunk.chunk->GetChunkPos().x * Chunk::depth, 0, chunk.chunk->GetChunkPos().y * Chunk::width));
 			
-			chunk.mesh->Draw(Context, view, mat, projection, shadowCoord, litVoxelShader, isLit);
+			
+			BoundingFrustum::CreateFromMatrix(frustrum, projection, true);
+			frustrum.Transform(frustrum, view.Invert());
+
+			box.CreateFromPoints(box, Vector3(chunk.chunk->GetChunkPos().x * 32, 0, chunk.chunk->GetChunkPos().y * 32), Vector3(chunk.chunk->GetChunkPos().x * 32 + 32, Chunk::height, chunk.chunk->GetChunkPos().y * 32 + 32));
+				
+			if (!isLit || frustrum.Contains(box))
+			{
+				
+				Matrix mat = mat.CreateTranslation(Vector3(chunk.chunk->GetChunkPos().x * Chunk::depth, 0, chunk.chunk->GetChunkPos().y * Chunk::width));
+				chunk.mesh->Draw(Context, view, mat, projection, shadowCoord, litVoxelShader, isLit);
+			}
+
+			
 		}
 	}
 
