@@ -340,9 +340,9 @@ void Game::CreateDeviceDependentResources()
 
     // TODO: Initialize device dependent objects here (independent of window size).
 
-    DX::ThrowIfFailed(
-        CreateWICTextureFromFile(device, L"C:\\Users\\Linka\\Documents\\NoTex.png", nullptr,
-            m_texture.ReleaseAndGetAddressOf()));
+    //DX::ThrowIfFailed(
+    //    CreateWICTextureFromFile(device, L"C:\\Users\\Linka\\Documents\\NoTex.png", nullptr,
+    //        m_texture.ReleaseAndGetAddressOf()));
     device;
 }
 
