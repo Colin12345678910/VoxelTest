@@ -23,7 +23,7 @@ void WorldRenderer::Render(const Matrix& view, const Matrix& world, const Matrix
 
 			box.CreateFromPoints(box, Vector3(chunk.chunk->GetChunkPos().x * 32, 0, chunk.chunk->GetChunkPos().y * 32), Vector3(chunk.chunk->GetChunkPos().x * 32 + 32, Chunk::height, chunk.chunk->GetChunkPos().y * 32 + 32));
 				
-			if (!isLit || frustrum.Contains(box))
+			if (true)
 			{
 				
 				Matrix mat = mat.CreateTranslation(Vector3(chunk.chunk->GetChunkPos().x * Chunk::depth, 0, chunk.chunk->GetChunkPos().y * Chunk::width));

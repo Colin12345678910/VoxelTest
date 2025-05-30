@@ -19,6 +19,8 @@
 #include <thread>
 #include <LitVoxelShader.h>
 #include <SpriteBatch.h>
+#include <ScreenGrab.h>
+#include <wincodec.h> // Optional
 
 using namespace DirectX::SimpleMath;
 
@@ -106,7 +108,7 @@ private:
     //Mesh* mChunks[32][32];
     //Chunk* chunks[32][32];
     
-
+    RenderTexture rt;
     // Device resources.
     std::unique_ptr<DX::DeviceResources>    m_deviceResources;
 

@@ -63,11 +63,11 @@
     <ClCompile Include="WorldRenderer.cpp">
       <Filter>world</Filter>
     </ClCompile>
-    <ClCompile Include="LitVoxelShader.cpp">
-      <Filter>Shaders</Filter>
-    </ClCompile>
     <ClCompile Include="ShadowMapper.cpp" />
     <ClCompile Include="RenderTexture.cpp" />
+    <ClCompile Include="LitVoxelShader.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

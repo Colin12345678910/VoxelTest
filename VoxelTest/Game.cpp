@@ -108,7 +108,7 @@ void Game::Initialize(HWND window, int width, int height)
     m_mouse = std::make_unique<Mouse>();
     m_mouse->SetWindow(window);
 
-    
+    rt.Init(device, 16000, 12000, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_R32_TYPELESS);
 }
 
 
@@ -151,7 +151,7 @@ void Game::Render()
     worldOrigin.y = 128;
     viewMatrix = Matrix::CreateLookAt(Vector3(1000 + cameraPos.x, 1000 , 1000 + cameraPos.z), worldOrigin, Vector3::UnitY);
     
-    projectionMatrix = Matrix::CreateOrthographic(512, 512, 1250, 3000);
+    projectionMatrix = Matrix::CreateOrthographic(1024, 1024, 1250, 3000);
 
     Matrix shadowC = (viewMatrix * projectionMatrix);
 
@@ -176,7 +176,9 @@ void Game::Render()
     context->PSSetShaderResources(0, 1, shadowMapper.GetStencilShaderRV());
     context->PSSetSamplers(0, 1, &pSamplerState);
     
-    
+    context->OMSetRenderTargets(1, rt.GetRenderTargetView().GetAddressOf(), rt.GetStencilTargetView().Get());
+    Viewport vp(0, 0, 16000, 12000);
+    context->RSSetViewports(1, vp.Get11());
 
     m_deviceResources->PIXBeginEvent(L"Render");
     
@@ -188,7 +190,7 @@ void Game::Render()
 
     spriteBatch->Begin();
     //(_In_ ID3D11ShaderResourceView* texture, XMFLOAT2 const& position, _In_opt_ RECT const* sourceRectangle, FXMVECTOR color = Colors::White, float rotation = 0, XMFLOAT2 const& origin = Float2Zero, float scale = 1, SpriteEffects effects = SpriteEffects_None, float layerDepth = 0);
-    spriteBatch->Draw(shadowMapper.GetShaderResourceView(), XMFLOAT2(0, 0), NULL, Colors::White.v, 0.0f, XMFLOAT2(0, 0), 0.1f);
+    //spriteBatch->Draw(shadowMapper.GetShaderResourceView(), XMFLOAT2(0, 0), NULL, Colors::White.v, 0.0f, XMFLOAT2(0, 0), 0.1f);
     spriteBatch->End();
 
     ID3D11ShaderResourceView* nullsrv[] = { nullptr };
@@ -201,15 +203,23 @@ void Game::Render()
     //    }
     //}
     //
-    
-    
 
 
     m_deviceResources->PIXEndEvent();
 
+    m_deviceResources->GetRenderTargetView();
+
+    HRESULT hr;
+
+
     // Show the new frame.
     m_deviceResources->Present();
 
+    //hr = SaveWICTextureToFile(context, shadowMapper.GetRenderTexture()->GetRenderTarget().Get(),
+    //    GUID_ContainerFormatJpeg, L"SCREENSHOT.JPG");
+    //DX::ThrowIfFailed(hr);
+
+    //exit(1);
 
     //Revert the depthState
     context->OMSetDepthStencilState(pDepthStencilState, 1);
@@ -223,11 +233,11 @@ void Game::Clear()
     // Clear the views.
     auto context = m_deviceResources->GetD3DDeviceContext();
     auto device = m_deviceResources->GetD3DDevice();
-    auto renderTarget = m_deviceResources->GetRenderTargetView();
-    auto depthStencil = m_deviceResources->GetDepthStencilView();
+    ID3D11RenderTargetView* renderTarget = rt.GetRenderTargetView().Get();
+    ID3D11DepthStencilView* depthStencil = rt.GetStencilTargetView().Get();
     
     
-    context->ClearRenderTargetView(renderTarget, Colors::CornflowerBlue);
+    context->ClearRenderTargetView(renderTarget, Colors::Black);
     context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
     context->OMSetRenderTargets(1, &renderTarget, depthStencil);
     
@@ -259,8 +269,11 @@ void Game::ComputeViewProj()
 
     look = cameraPos + Vector3(x, y, z);
 
-    viewMatrix = Matrix::CreateLookAt(cameraPos, look, Vector3::UnitY);
-    projectionMatrix = Matrix::CreatePerspectiveFieldOfView(60.0 * XM_PI / 180.0, Main::windowX / Main::windowY, 0.1, 1600);
+    viewMatrix = Matrix::CreateLookAt(Vector3(1000, 1000, 1000), Vector3::Zero, Vector3::UnitY);
+    //viewMatrix = Matrix::CreateLookAt(cameraPos, look, Vector3::UnitY);
+
+    projectionMatrix = Matrix::CreateOrthographic(400, 400, 1250, 3000);
+    //projectionMatrix = Matrix::CreatePerspectiveFieldOfView(60.0 * XM_PI / 180.0, Main::windowX / Main::windowY, 0.1, 1600);
 }
 #pragma endregion
 
@@ -361,6 +374,13 @@ void Game::HandleKeyAndMouse(float deltaTime)
 
     if (kb.Escape) {
         ExitGame();
+    }
+
+    if (kb.F2)
+    {
+        HRESULT hr = SaveWICTextureToFile(m_deviceResources->GetD3DDeviceContext(), rt.GetRenderTarget().Get(),
+            GUID_ContainerFormatJpeg, L"SCREENSHOT.JPG");
+        DX::ThrowIfFailed(hr);
     }
    
 

@@ -97,10 +97,10 @@ void Mesh::AddCubeMesh(Vector3 pos, bool up, bool down, bool left, bool right, b
 	int offset;
 	if (back) {
 		offset = verts.size();
-		verts.push_back({ Vector3(0.0f, 1.0f, 1.0f) + pos, Colors::Green.v });
-		verts.push_back({ Vector3(1.0f, 0.0f, 1.0f) + pos, Colors::Green.v });
-		verts.push_back({ Vector3(0.0f, 0.0f, 1.0f) + pos, Colors::Green.v });
-		verts.push_back({ Vector3(1.0f, 1.0f, 1.0f) + pos, Colors::Green.v });
+		verts.push_back({ Vector3(0.0f, 1.0f, 1.0f) + pos, Colors::Black.v });
+		verts.push_back({ Vector3(1.0f, 0.0f, 1.0f) + pos, Colors::Black.v });
+		verts.push_back({ Vector3(0.0f, 0.0f, 1.0f) + pos, Colors::Black.v });
+		verts.push_back({ Vector3(1.0f, 1.0f, 1.0f) + pos, Colors::Black.v });
 
 		indexs.push_back(0 + offset);
 		indexs.push_back(1 + offset);
@@ -113,10 +113,10 @@ void Mesh::AddCubeMesh(Vector3 pos, bool up, bool down, bool left, bool right, b
 	//Back
 	if (front) {
 		offset = verts.size();
-		verts.push_back({ Vector3(0.0f, 1.0f, 0.0f) + pos, Colors::Purple.v });
-		verts.push_back({ Vector3(1.0f, 0.0f, 0.0f) + pos, Colors::Purple.v });
-		verts.push_back({ Vector3(0.0f, 0.0f, 0.0f) + pos, Colors::Purple.v });
-		verts.push_back({ Vector3(1.0f, 1.0f, 0.0f) + pos, Colors::Purple.v });
+		verts.push_back({ Vector3(0.0f, 1.0f, 0.0f) + pos, Colors::Black.v });
+		verts.push_back({ Vector3(1.0f, 0.0f, 0.0f) + pos, Colors::Black.v });
+		verts.push_back({ Vector3(0.0f, 0.0f, 0.0f) + pos, Colors::Black.v });
+		verts.push_back({ Vector3(1.0f, 1.0f, 0.0f) + pos, Colors::Black.v });
 
 		indexs.push_back(2 + offset);
 		indexs.push_back(1 + offset);
@@ -129,10 +129,10 @@ void Mesh::AddCubeMesh(Vector3 pos, bool up, bool down, bool left, bool right, b
 	//Left side
 	if (left) {
 		offset = verts.size();
-		verts.push_back({ Vector3(0.0f, 0.0f, 0.0f) + pos, Colors::Red.v });
-		verts.push_back({ Vector3(0.0f, 1.0f, 1.0f) + pos, Colors::Red.v });
-		verts.push_back({ Vector3(0.0f, 0.0f, 1.0f) + pos, Colors::Red.v });
-		verts.push_back({ Vector3(0.0f, 1.0f, 0.0f) + pos, Colors::Red.v });
+		verts.push_back({ Vector3(0.0f, 0.0f, 0.0f) + pos, Colors::Black.v });
+		verts.push_back({ Vector3(0.0f, 1.0f, 1.0f) + pos, Colors::Black.v });
+		verts.push_back({ Vector3(0.0f, 0.0f, 1.0f) + pos, Colors::Black.v });
+		verts.push_back({ Vector3(0.0f, 1.0f, 0.0f) + pos, Colors::Black.v });
 
 		indexs.push_back(0 + offset);
 		indexs.push_back(1 + offset);
@@ -146,10 +146,10 @@ void Mesh::AddCubeMesh(Vector3 pos, bool up, bool down, bool left, bool right, b
 	if (right)
 	{
 		offset = verts.size();
-		verts.push_back({ Vector3(1.0f, 1.0f, 0.0f) + pos, Colors::Yellow.v });
-		verts.push_back({ Vector3(1.0f, 0.0f, 1.0f) + pos, Colors::Yellow.v });
-		verts.push_back({ Vector3(1.0f, 1.0f, 1.0f) + pos, Colors::Yellow.v });
-		verts.push_back({ Vector3(1.0f, 0.0f, 0.0f) + pos, Colors::Yellow.v });
+		verts.push_back({ Vector3(1.0f, 1.0f, 0.0f) + pos, Colors::Black.v });
+		verts.push_back({ Vector3(1.0f, 0.0f, 1.0f) + pos, Colors::Black.v });
+		verts.push_back({ Vector3(1.0f, 1.0f, 1.0f) + pos, Colors::Black.v });
+		verts.push_back({ Vector3(1.0f, 0.0f, 0.0f) + pos, Colors::Black.v });
 
 		indexs.push_back(0 + offset);
 		indexs.push_back(1 + offset);
@@ -181,10 +181,10 @@ void Mesh::AddCubeMesh(Vector3 pos, bool up, bool down, bool left, bool right, b
 	if (down)
 	{
 		offset = verts.size();
-		verts.push_back({ Vector3(0.0f, 0.0f, 0.0f) + pos, Colors::DarkKhaki.v });
-		verts.push_back({ Vector3(0.0f, 0.0f, 1.0f) + pos, Colors::DarkKhaki.v });
-		verts.push_back({ Vector3(1.0f, 0.0f, 0.0f) + pos, Colors::DarkKhaki.v });
-		verts.push_back({ Vector3(1.0f, 0.0f, 1.0f) + pos, Colors::DarkKhaki.v });
+		verts.push_back({ Vector3(0.0f, 0.0f, 0.0f) + pos, Colors::Black.v });
+		verts.push_back({ Vector3(0.0f, 0.0f, 1.0f) + pos, Colors::Black.v });
+		verts.push_back({ Vector3(1.0f, 0.0f, 0.0f) + pos, Colors::Black.v });
+		verts.push_back({ Vector3(1.0f, 0.0f, 1.0f) + pos, Colors::Black.v });
 
 		indexs.push_back(0 + offset);
 		indexs.push_back(1 + offset);

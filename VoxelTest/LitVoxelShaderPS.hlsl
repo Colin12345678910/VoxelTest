@@ -8,7 +8,7 @@ float4 main(PS_INPUT input) : SV_TARGET
 	////float3 SPOS = mul(shadowCoord, input.WorldPos);
 	//float4 lightPos = mul(shadowScaler, input.LightPos);
 	
-	//float3 shadowPos = input.LightPos.xyz / input.LightPos.w; //Apparently the W in this case is 0, and causes a failure.
+	float3 shadowPos = input.LightPos.xyz / input.LightPos.w; //Apparently the W in this case is 0, and causes a failure.
 	//float currentDepth = shadowPos.z;
 
 	//shadowPos = shadowPos * 0.5 + 0.5;
@@ -24,5 +24,5 @@ float4 main(PS_INPUT input) : SV_TARGET
 	
 	float shadowSample = ShadowSample(input.LightPos);
 	
-	return float4(input.Color.xyz - shadowSample, 1.0f);
+	return float4((input.WorldPosition.xyz / 255) + (1.3 * shadowSample), 1.0f) * input.Color;
 }
